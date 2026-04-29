@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, User, CreditCard, Gift, StickyNote, ClipboardCheck, Clock, Pencil, Save, X, Plus, Trash2, XCircle } from 'lucide-react';
 import { useGetOrderByIdQuery, useUpdateOrderMutation, useUpdateOrderStatusMutation } from '../../api/orderApi';
+import { useGetSystemConfigQuery } from '../../api/configApi';
 import { formatCurrency, paymentMethodLabel, formatDateTime } from '../../utils/format';
 import { showToast } from '../../utils/toastService';
 import StatusBadge from '../../components/shared/StatusBadge';
-import { VEHICLE_MODELS, GIFT_OPTIONS, getVehiclePrice } from '../../types';
+import { getVehiclePrice } from '../../types';
 import type { CustomerInfo, VehicleInfo, PaymentInfo, PromotionInfo, AddonItem, Order } from '../../types';
 
 function InfoRow({ label, value, accent, mono }: { label: string; value: string; accent?: string; mono?: boolean }) {
@@ -24,6 +25,7 @@ export default function SaleOrderDetail() {
   const navigate = useNavigate();
   
   const { data: order } = useGetOrderByIdQuery(id || '', { skip: !id });
+  const { data: config } = useGetSystemConfigQuery();
   const [updateOrder] = useUpdateOrderMutation();
   const [updateStatus] = useUpdateOrderStatusMutation();
 
@@ -230,7 +232,7 @@ export default function SaleOrderDetail() {
               </div>
               <div className="space-y-5">
                 {editVehicles.map((v, idx) => {
-                  const md = v.model ? VEHICLE_MODELS[v.model] : null;
+                  const md = config?.vehicles && v.model ? config.vehicles[v.model] : null;
                   return (
                     <div key={idx} className={`${editVehicles.length > 1 ? 'p-4 rounded-xl border border-[#e2e5ee] bg-white/60' : ''}`}>
                       {editVehicles.length > 1 && (
@@ -244,20 +246,20 @@ export default function SaleOrderDetail() {
                           <label className="form-label">Dòng xe</label>
                           <select className="form-select" value={v.model} onChange={e => {
                             const m = e.target.value;
-                            const mData = VEHICLE_MODELS[m];
+                            const mData = config?.vehicles ? config.vehicles[m] : null;
                             const firstVer = mData?.versions[0];
                             const firstColor = mData?.colors[0] || '';
-                            const price = getVehiclePrice(m, firstVer?.name || '', firstColor);
+                            const price = getVehiclePrice(config?.vehicles, m, firstVer?.name || '', firstColor);
                             updateEditVehicle(idx, { model: m, version: firstVer?.name || '', color: firstColor, listPrice: price, salePrice: price });
                           }}>
-                            {Object.keys(VEHICLE_MODELS).map(m => <option key={m}>{m}</option>)}
+                            {config?.vehicles && Object.keys(config.vehicles).map(m => <option key={m}>{m}</option>)}
                           </select>
                         </div>
                         <div className="form-group">
                           <label className="form-label">Phiên bản</label>
                           <select className="form-select" value={v.version} onChange={e => {
                             const vName = e.target.value;
-                            const price = getVehiclePrice(v.model, vName, v.color);
+                            const price = getVehiclePrice(config?.vehicles, v.model, vName, v.color);
                             updateEditVehicle(idx, { version: vName, listPrice: price, salePrice: price });
                           }}>
                             {md?.versions.map(ver => <option key={ver.name}>{ver.name}</option>)}
@@ -267,7 +269,7 @@ export default function SaleOrderDetail() {
                           <label className="form-label">Màu xe</label>
                           <select className="form-select" value={v.color} onChange={e => {
                             const color = e.target.value;
-                            const price = getVehiclePrice(v.model, v.version, color);
+                            const price = getVehiclePrice(config?.vehicles, v.model, v.version, color);
                             updateEditVehicle(idx, { color, listPrice: price, salePrice: price });
                           }}>
                             {md?.colors.map(c => <option key={c}>{c}</option>)}
@@ -314,7 +316,7 @@ export default function SaleOrderDetail() {
                 <div className="form-group mt-1"><label className="form-label">Giảm giá (VNĐ)</label><input type="number" className="form-input" value={editPromo.discountAmount || ''} onChange={e => setEditPromo({ ...editPromo, discountAmount: Number(e.target.value) })} /></div>
                 <div className="form-group mt-4">
                   <label className="form-label">Quà tặng</label>
-                  <div className="space-y-2 mt-1">{GIFT_OPTIONS.map(g => (
+                  <div className="space-y-2 mt-1">{config?.gifts && config.gifts.map(g => (
                     <label key={g} className={`checkbox-wrapper text-[12px] py-2.5 px-3 ${editPromo.gifts.includes(g) ? 'checked' : ''}`}>
                       <input type="checkbox" checked={editPromo.gifts.includes(g)} onChange={() => toggleGift(g)} />
                       <span className="text-[12px] text-[#1a2547]">{g}</span>

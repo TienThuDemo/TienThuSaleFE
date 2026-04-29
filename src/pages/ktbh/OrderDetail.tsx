@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import StatusBadge from '../../components/shared/StatusBadge';
 import { useGetOrderByIdQuery, useUpdateOrderMutation, useUpdateOrderStatusMutation, useUpdateOrderContractMutation } from '../../api/orderApi';
+import { useGetSystemConfigQuery } from '../../api/configApi';
 import type { AddonItem, ContractInfo, CustomerInfo, Order, PaymentInfo, PromotionInfo, VehicleInfo } from '../../types';
-import { GIFT_OPTIONS, VEHICLE_MODELS, getVehiclePrice } from '../../types';
+import { getVehiclePrice } from '../../types';
 import { formatCurrency, paymentMethodLabel } from '../../utils/format';
 import { showToast } from '../../utils/toastService';
 
@@ -33,6 +34,7 @@ export default function OrderDetail() {
   const navigate = useNavigate();
   
   const { data: order } = useGetOrderByIdQuery(id || '', { skip: !id });
+  const { data: config } = useGetSystemConfigQuery();
   const [updateStatusMutation] = useUpdateOrderStatusMutation();
   const [updateContractMutation] = useUpdateOrderContractMutation();
   const [updateOrderMutation] = useUpdateOrderMutation();
@@ -255,7 +257,7 @@ export default function OrderDetail() {
               </div>
               <div className="space-y-5">
                 {editVehicles.map((v, idx) => {
-                  const md = v.model ? VEHICLE_MODELS[v.model] : null;
+                  const md = config?.vehicles && v.model ? config.vehicles[v.model] : null;
                   return (
                     <div key={idx} className={`${editVehicles.length > 1 ? 'p-4 rounded-xl border border-[#e2e5ee] bg-white/60' : ''}`}>
                       {editVehicles.length > 1 && (
@@ -268,19 +270,19 @@ export default function OrderDetail() {
                         <div className="form-group"><label className="form-label">Dòng xe</label>
                           <select className="form-select" value={v.model} onChange={e => {
                             const m = e.target.value;
-                            const mData = VEHICLE_MODELS[m];
+                            const mData = config?.vehicles ? config.vehicles[m] : null;
                             const firstVer = mData?.versions[0];
                             const firstColor = mData?.colors[0] || '';
-                            const price = getVehiclePrice(m, firstVer?.name || '', firstColor);
+                            const price = getVehiclePrice(config?.vehicles, m, firstVer?.name || '', firstColor);
                             updateEditVehicle(idx, { model: m, version: firstVer?.name || '', color: firstColor, listPrice: price, salePrice: price });
                           }}>
                             <option value="">Chọn</option>
-                            {Object.keys(VEHICLE_MODELS).map(m => <option key={m}>{m}</option>)}
+                            {config?.vehicles && Object.keys(config.vehicles).map(m => <option key={m}>{m}</option>)}
                           </select></div>
                         <div className="form-group"><label className="form-label">Phiên bản</label>
                           <select className="form-select" value={v.version} onChange={e => {
                             const vName = e.target.value;
-                            const price = getVehiclePrice(v.model, vName, v.color);
+                            const price = getVehiclePrice(config?.vehicles, v.model, vName, v.color);
                             updateEditVehicle(idx, { version: vName, listPrice: price, salePrice: price });
                           }}>
                             <option value="">Chọn</option>
@@ -289,7 +291,7 @@ export default function OrderDetail() {
                         <div className="form-group"><label className="form-label">Màu xe</label>
                           <select className="form-select" value={v.color} onChange={e => {
                             const color = e.target.value;
-                            const price = getVehiclePrice(v.model, v.version, color);
+                            const price = getVehiclePrice(config?.vehicles, v.model, v.version, color);
                             updateEditVehicle(idx, { color, listPrice: price, salePrice: price });
                           }}>
                             <option value="">Chọn</option>
@@ -334,7 +336,7 @@ export default function OrderDetail() {
               <div className="animate-fade-in">
                 <div className="form-group mb-4"><label className="form-label">Giảm giá (VNĐ)</label><input type="number" className="form-input" value={editPromo.discountAmount || ''} onChange={e => setEditPromo({ ...editPromo, discountAmount: Number(e.target.value) })} /></div>
                 <div className="form-group mb-4"><label className="form-label">Quà tặng</label>
-                  <div className="space-y-2 mt-1">{GIFT_OPTIONS.map(g => (
+                  <div className="space-y-2 mt-1">{config?.gifts && config.gifts.map(g => (
                     <label key={g} className={`checkbox-wrapper text-[12px] py-2.5 px-3 ${editPromo.gifts.includes(g) ? 'checked' : ''}`}>
                       <input type="checkbox" checked={editPromo.gifts.includes(g)} onChange={() => toggleGift(g)} />
                       <span className="text-[12px] text-[#1a2547]">{g}</span>

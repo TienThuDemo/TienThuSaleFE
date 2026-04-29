@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../../utils/toastService';
 import { useCreateOrderMutation } from '../../api/orderApi';
+import { useGetSystemConfigQuery } from '../../api/configApi';
 import type { AddonItem, CustomerInfo, PaymentInfo, PromotionInfo, VehicleInfo } from '../../types';
-import { DEFAULT_ADDONS, GIFT_OPTIONS, VEHICLE_MODELS, getVehiclePrice, vehicleTotalAmount } from '../../types';
+import { getVehiclePrice, vehicleTotalAmount } from '../../types';
 import { formatCurrency, generateOrderId } from '../../utils/format';
 import OrderSummary from './OrderSummary';
 
@@ -21,12 +22,19 @@ const emptyVehicle = (): VehicleInfo => ({ model: '', version: '', color: '', qu
 export default function CreateOrder() {
   const navigate = useNavigate();
   const [createOrder] = useCreateOrderMutation();
+  const { data: config, isLoading } = useGetSystemConfigQuery();
   const [step, setStep] = useState(0);
   const [showSummary, setShowSummary] = useState(false);
 
   const [vehicles, setVehicles] = useState<VehicleInfo[]>([emptyVehicle()]);
   const [promo, setPromo] = useState<PromotionInfo>({ discountAmount: 0, gifts: [], promotionNote: '' });
-  const [addons, setAddons] = useState<AddonItem[]>(DEFAULT_ADDONS.map((a) => ({ ...a })));
+  const [addons, setAddons] = useState<AddonItem[]>([]);
+  const [addonsInitialized, setAddonsInitialized] = useState(false);
+
+  if (config && !addonsInitialized) {
+    setAddons(config.addons.map((a) => ({ ...a, selected: false })));
+    setAddonsInitialized(true);
+  }
   const [payment, setPayment] = useState<PaymentInfo>({ paymentMethod: 'cash', depositAmount: 0, expectedFullPaymentDate: '', remainingAmount: 0 });
   const [customer, setCustomer] = useState<CustomerInfo>({ fullName: '', phone: '', idNumber: '', address: '', email: '' });
   const [note, setNote] = useState('');
@@ -62,6 +70,8 @@ export default function CreateOrder() {
   if (showSummary) {
     return <OrderSummary vehicles={vehicles} promo={promo} addons={addons} payment={{ ...payment, remainingAmount: remaining }} customer={customer} totalAmount={totalAmount} note={note} onBack={() => setShowSummary(false)} onSubmit={handleSubmit} />;
   }
+
+  if (isLoading || !config) return <div className="p-10 text-center">Đang tải cấu hình...</div>;
 
   return (
     <div className="p-4 sm:p-6 lg:p-10 animate-fade-in max-w-[900px] mx-auto">
@@ -120,7 +130,7 @@ export default function CreateOrder() {
 
             <div className="space-y-6 mt-4">
               {vehicles.map((v, idx) => {
-                const md = v.model ? VEHICLE_MODELS[v.model] : null;
+                const md = v.model ? config.vehicles[v.model] : null;
                 return (
                   <div key={idx} className={`${vehicles.length > 1 ? 'p-5 rounded-2xl border-2 border-[#e2e5ee] bg-white/60' : ''}`}>
                     {vehicles.length > 1 && (
@@ -136,14 +146,14 @@ export default function CreateOrder() {
                         <label className="form-label">Dòng xe <span className="required">*</span></label>
                         <select className="form-select" value={v.model} onChange={(e) => {
                           const m = e.target.value;
-                          const mData = VEHICLE_MODELS[m];
+                          const mData = config.vehicles[m];
                           const firstVer = mData?.versions[0];
                           const firstColor = mData?.colors[0] || '';
-                          const price = getVehiclePrice(m, firstVer?.name || '', firstColor);
+                          const price = getVehiclePrice(config.vehicles, m, firstVer?.name || '', firstColor);
                           updateVehicle(idx, { model: m, version: firstVer?.name || '', color: firstColor, listPrice: price, salePrice: price });
                         }}>
                           <option value="">Chọn dòng xe</option>
-                          {Object.keys(VEHICLE_MODELS).map((m) => <option key={m} value={m}>{m}</option>)}
+                          {Object.keys(config.vehicles).map((m) => <option key={m} value={m}>{m}</option>)}
                         </select>
                       </div>
                       <div className="form-group">
@@ -151,7 +161,7 @@ export default function CreateOrder() {
                         <select className="form-select" value={v.version} onChange={(e) => {
                           const vName = e.target.value;
                           const color = v.color || md?.colors[0] || '';
-                          const price = getVehiclePrice(v.model, vName, color);
+                          const price = getVehiclePrice(config.vehicles, v.model, vName, color);
                           updateVehicle(idx, { version: vName, listPrice: price, salePrice: price });
                         }} disabled={!md}>
                           <option value="">Chọn phiên bản</option>
@@ -162,7 +172,7 @@ export default function CreateOrder() {
                         <label className="form-label">Màu xe <span className="required">*</span></label>
                         <select className="form-select" value={v.color} onChange={(e) => {
                           const color = e.target.value;
-                          const price = v.version ? getVehiclePrice(v.model, v.version, color) : 0;
+                          const price = v.version ? getVehiclePrice(config.vehicles, v.model, v.version, color) : 0;
                           updateVehicle(idx, { color, listPrice: price, salePrice: price });
                         }} disabled={!md}>
                           <option value="">Chọn màu xe</option>
@@ -220,7 +230,7 @@ export default function CreateOrder() {
               <div className="form-group">
                 <label className="form-label mb-1">Quà tặng kèm theo</label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">
-                  {GIFT_OPTIONS.map((g) => (
+                  {config.gifts.map((g) => (
                     <label key={g} className={`checkbox-wrapper ${promo.gifts.includes(g) ? 'checked' : ''}`}>
                       <input type="checkbox" checked={promo.gifts.includes(g)} onChange={() => toggleGift(g)} />
                       <span className="text-[13px] font-semibold text-[#1a2547]">{g}</span>

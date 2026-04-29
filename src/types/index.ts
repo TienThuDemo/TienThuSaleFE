@@ -97,70 +97,19 @@ export interface VersionDef {
   colorPrices: Record<string, number>;
 }
 
-export const VEHICLE_MODELS: Record<string, { versions: VersionDef[]; colors: string[] }> = {
-  'Honda Vision': {
-    colors: ['Trắng ngọc trai', 'Đỏ tươi', 'Xanh lá', 'Đen nhám', 'Bạc'],
-    versions: [
-      { name: 'Tiêu chuẩn', colorPrices: { 'Trắng ngọc trai': 32290000, 'Đỏ tươi': 31490000, 'Xanh lá': 31490000, 'Đen nhám': 31990000, 'Bạc': 31490000 } },
-      { name: 'Đặc biệt',   colorPrices: { 'Trắng ngọc trai': 34290000, 'Đỏ tươi': 33490000, 'Xanh lá': 33490000, 'Đen nhám': 33990000, 'Bạc': 33490000 } },
-      { name: 'Cá tính',     colorPrices: { 'Trắng ngọc trai': 35290000, 'Đỏ tươi': 34490000, 'Xanh lá': 34490000, 'Đen nhám': 34990000, 'Bạc': 34490000 } },
-    ],
-  },
-  'Honda SH Mode': {
-    colors: ['Trắng ngọc trai', 'Xanh đậm', 'Đỏ đen', 'Bạc', 'Đen'],
-    versions: [
-      { name: 'Thời trang', colorPrices: { 'Trắng ngọc trai': 55990000, 'Xanh đậm': 54990000, 'Đỏ đen': 54990000, 'Bạc': 54990000, 'Đen': 54990000 } },
-      { name: 'Cá tính',    colorPrices: { 'Trắng ngọc trai': 57990000, 'Xanh đậm': 56990000, 'Đỏ đen': 56990000, 'Bạc': 56990000, 'Đen': 56990000 } },
-      { name: 'Thể thao',   colorPrices: { 'Trắng ngọc trai': 58990000, 'Xanh đậm': 57990000, 'Đỏ đen': 57990000, 'Bạc': 57990000, 'Đen': 57990000 } },
-    ],
-  },
-  'Yamaha Grande': {
-    colors: ['Trắng xanh', 'Hồng', 'Xanh dương', 'Đỏ', 'Đen'],
-    versions: [
-      { name: 'Tiêu chuẩn', colorPrices: { 'Trắng xanh': 41000000, 'Hồng': 40500000, 'Xanh dương': 40500000, 'Đỏ': 40500000, 'Đen': 40500000 } },
-      { name: 'Đặc biệt',   colorPrices: { 'Trắng xanh': 46500000, 'Hồng': 46000000, 'Xanh dương': 46000000, 'Đỏ': 46000000, 'Đen': 46000000 } },
-      { name: 'Hybrid',      colorPrices: { 'Trắng xanh': 51000000, 'Hồng': 50500000, 'Xanh dương': 50500000, 'Đỏ': 50500000, 'Đen': 50500000 } },
-    ],
-  },
-  'Honda Air Blade': {
-    colors: ['Đen đỏ', 'Xanh đen', 'Trắng', 'Bạc đen', 'Đỏ đen'],
-    versions: [
-      { name: 'Tiêu chuẩn 125cc', colorPrices: { 'Đen đỏ': 41190000, 'Xanh đen': 41190000, 'Trắng': 41690000, 'Bạc đen': 41190000, 'Đỏ đen': 41190000 } },
-      { name: 'Đặc biệt 125cc',   colorPrices: { 'Đen đỏ': 42490000, 'Xanh đen': 42490000, 'Trắng': 42990000, 'Bạc đen': 42490000, 'Đỏ đen': 42490000 } },
-      { name: 'Tiêu chuẩn 160cc',  colorPrices: { 'Đen đỏ': 56490000, 'Xanh đen': 56490000, 'Trắng': 56990000, 'Bạc đen': 56490000, 'Đỏ đen': 56490000 } },
-    ],
-  },
-  'Yamaha NVX': {
-    colors: ['Đen nhám', 'Xanh GP', 'Đỏ', 'Trắng xanh', 'Xám'],
-    versions: [
-      { name: '155 Tiêu chuẩn', colorPrices: { 'Đen nhám': 53500000, 'Xanh GP': 53000000, 'Đỏ': 53000000, 'Trắng xanh': 53000000, 'Xám': 53000000 } },
-      { name: '155 Đặc biệt',   colorPrices: { 'Đen nhám': 56000000, 'Xanh GP': 55500000, 'Đỏ': 55500000, 'Trắng xanh': 55500000, 'Xám': 55500000 } },
-      { name: '155 VVA',         colorPrices: { 'Đen nhám': 57500000, 'Xanh GP': 57000000, 'Đỏ': 57000000, 'Trắng xanh': 57000000, 'Xám': 57000000 } },
-    ],
-  },
-};
+export type VehicleModelsConfig = Record<string, { versions: { name: string; colorPrices: Record<string, number> }[]; colors: string[] }>;
 
 /** Lookup list price by model + version + color. Returns 0 if not found. */
-export function getVehiclePrice(model: string, version: string, color: string): number {
-  const md = VEHICLE_MODELS[model];
+export function getVehiclePrice(
+  vehiclesConfig: VehicleModelsConfig | undefined,
+  model: string,
+  version: string,
+  color: string
+): number {
+  if (!vehiclesConfig) return 0;
+  const md = vehiclesConfig[model];
   if (!md) return 0;
   const ver = md.versions.find(v => v.name === version);
   if (!ver) return 0;
   return ver.colorPrices[color] ?? Object.values(ver.colorPrices)[0] ?? 0;
 }
-
-export const DEFAULT_ADDONS: AddonItem[] = [
-  { id: 'insurance', name: 'Bảo hiểm xe máy (1 năm)', price: 66000, selected: false },
-  { id: 'maintenance', name: 'Gói bảo dưỡng 12 tháng', price: 1500000, selected: false },
-  { id: 'accessories', name: 'Phụ kiện lắp thêm', price: 2000000, selected: false },
-  { id: 'registration', name: 'Phí đăng ký biển số', price: 4000000, selected: false },
-];
-
-export const GIFT_OPTIONS = [
-  'Mũ bảo hiểm chính hãng',
-  'Áo mưa cao cấp',
-  'Voucher bảo dưỡng 500K',
-  'Thảm lót chân',
-  'Khóa chống trộm',
-  'Bọc yên xe',
-];

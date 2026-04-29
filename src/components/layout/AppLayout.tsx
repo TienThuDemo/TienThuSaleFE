@@ -7,6 +7,7 @@ import {
   FilePlus2,
   LayoutDashboard,
   Menu,
+  Settings,
   X
 } from 'lucide-react';
 import { useState } from 'react';
@@ -21,6 +22,10 @@ const saleNav = [
 const ktbhNav = [
   { to: '/ktbh', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/ktbh/orders', icon: ClipboardList, label: 'Danh sách đơn' },
+];
+
+const adminNav = [
+  { to: '/admin/config', icon: Settings, label: 'Cấu hình hệ thống', end: false },
 ];
 
 /* ── Sidebar color tokens ── */
@@ -41,11 +46,12 @@ export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const isKTBH = location.pathname.startsWith('/ktbh');
-  const currentNav = isKTBH ? ktbhNav : saleNav;
-  const roleLabel = isKTBH ? 'KẾ TOÁN BÁN HÀNG' : 'NHÂN VIÊN SALE';
-  const roleBadgeColor = isKTBH ? 'from-amber-500 to-orange-600' : 'from-red-500 to-red-700';
-  const userName = isKTBH ? 'Nguyễn Thị Lan' : 'Trần Văn Hùng';
-  const userRole = isKTBH ? 'KTBH' : 'SALE';
+  const isAdmin = location.pathname.startsWith('/admin');
+  const currentNav = isAdmin ? adminNav : isKTBH ? ktbhNav : saleNav;
+  const roleLabel = isAdmin ? 'QUẢN TRỊ HỆ THỐNG' : isKTBH ? 'KẾ TOÁN BÁN HÀNG' : 'NHÂN VIÊN SALE';
+  const roleBadgeColor = isAdmin ? 'from-purple-500 to-indigo-600' : isKTBH ? 'from-amber-500 to-orange-600' : 'from-red-500 to-red-700';
+  const userName = isAdmin ? 'Admin' : isKTBH ? 'Nguyễn Thị Lan' : 'Trần Văn Hùng';
+  const userRole = isAdmin ? 'ADMIN' : isKTBH ? 'KTBH' : 'SALE';
   const [prevPathname, setPrevPathname] = useState(location.pathname);
 
   if (location.pathname !== prevPathname) {
@@ -126,28 +132,43 @@ export default function AppLayout() {
       </nav>
 
       {/* Role Switcher */}
-      <div className="px-3 lg:px-4 pb-3">
-        <NavLink
-          to={isKTBH ? '/sale' : '/ktbh'}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-[12px] font-semibold transition-all"
-          style={{
-            color: S.textMuted,
-            border: `1px dashed ${S.border}`,
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.color = S.textHover;
-            e.currentTarget.style.background = S.bgHover;
-            e.currentTarget.style.borderColor = S.textMuted;
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.color = S.textMuted;
-            e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.borderColor = S.border;
-          }}
-        >
-          <ArrowLeftRight className="w-4 h-4 flex-shrink-0" />
-          {!collapsed && <span>Chuyển sang {isKTBH ? 'Sale' : 'KTBH'}</span>}
-        </NavLink>
+      <div className="px-3 lg:px-4 pb-3 flex flex-col gap-2">
+        {!isAdmin && (
+          <NavLink
+            to="/admin/config"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[12px] font-semibold transition-all"
+            style={{ color: S.textMuted, border: `1px dashed ${S.border}` }}
+            onMouseEnter={e => { e.currentTarget.style.color = S.textHover; e.currentTarget.style.background = S.bgHover; e.currentTarget.style.borderColor = S.textMuted; }}
+            onMouseLeave={e => { e.currentTarget.style.color = S.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = S.border; }}
+          >
+            <ArrowLeftRight className="w-4 h-4 flex-shrink-0" />
+            {!collapsed && <span>Chuyển Admin</span>}
+          </NavLink>
+        )}
+        {!isKTBH && (
+          <NavLink
+            to="/ktbh"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[12px] font-semibold transition-all"
+            style={{ color: S.textMuted, border: `1px dashed ${S.border}` }}
+            onMouseEnter={e => { e.currentTarget.style.color = S.textHover; e.currentTarget.style.background = S.bgHover; e.currentTarget.style.borderColor = S.textMuted; }}
+            onMouseLeave={e => { e.currentTarget.style.color = S.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = S.border; }}
+          >
+            <ArrowLeftRight className="w-4 h-4 flex-shrink-0" />
+            {!collapsed && <span>Chuyển KTBH</span>}
+          </NavLink>
+        )}
+        {(isAdmin || isKTBH) && (
+          <NavLink
+            to="/sale"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[12px] font-semibold transition-all"
+            style={{ color: S.textMuted, border: `1px dashed ${S.border}` }}
+            onMouseEnter={e => { e.currentTarget.style.color = S.textHover; e.currentTarget.style.background = S.bgHover; e.currentTarget.style.borderColor = S.textMuted; }}
+            onMouseLeave={e => { e.currentTarget.style.color = S.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = S.border; }}
+          >
+            <ArrowLeftRight className="w-4 h-4 flex-shrink-0" />
+            {!collapsed && <span>Chuyển Sale</span>}
+          </NavLink>
+        )}
       </div>
 
       {/* Collapse — desktop only */}

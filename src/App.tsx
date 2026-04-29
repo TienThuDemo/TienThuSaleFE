@@ -9,6 +9,7 @@ import KTBHDashboard from './pages/ktbh/KTBHDashboard';
 import KTBHOrders from './pages/ktbh/KTBHOrders';
 import OrderDetail from './pages/ktbh/OrderDetail';
 import ContractPreview from './pages/ktbh/ContractPreview';
+import SystemConfig from './pages/admin/SystemConfig';
 export default function App() {
   return (
     <BrowserRouter>
@@ -26,6 +27,9 @@ export default function App() {
           <Route path="/ktbh/orders" element={<KTBHOrders />} />
           <Route path="/ktbh/orders/:id" element={<OrderDetail />} />
           <Route path="/ktbh/contracts/:id" element={<ContractPreview />} />
+
+          {/* Admin routes */}
+          <Route path="/admin/config" element={<SystemConfig />} />
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/sale" replace />} />
