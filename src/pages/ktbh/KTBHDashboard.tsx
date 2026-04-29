@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Clock, CheckCircle, FileText, FolderCheck, ArrowRight, Shield } from 'lucide-react';
-import { useOrderStore } from '../../store/useOrderStore';
+import { useGetOrdersQuery } from '../../api/orderApi';
 import StatCard from '../../components/shared/StatCard';
 
 export default function KTBHDashboard() {
   const navigate = useNavigate();
-  const orders = useOrderStore((s) => s.orders);
+  const { data: orders = [] } = useGetOrdersQuery();
   const waiting = orders.filter((o) => o.status === 'WAITING_KTBH').length;
   const confirmed = orders.filter((o) => o.status === 'INFO_CONFIRMED' || o.status === 'READY_TO_EXPORT_CONTRACT').length;
   const exported = orders.filter((o) => o.status === 'CONTRACT_EXPORTED').length;

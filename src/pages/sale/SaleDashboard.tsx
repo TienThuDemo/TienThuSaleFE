@@ -2,13 +2,13 @@ import { ArrowRight, Clock, FileCheck2, FilePlus2, Sparkles, TrendingUp } from '
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../../components/shared/StatCard';
 import StatusBadge from '../../components/shared/StatusBadge';
-import { useOrderStore } from '../../store/useOrderStore';
+import { useGetOrdersQuery } from '../../api/orderApi';
 import { vehicleSummary } from '../../types';
 import { formatCurrency, formatDateTime } from '../../utils/format';
 
 export default function SaleDashboard() {
   const navigate = useNavigate();
-  const orders = useOrderStore((s) => s.orders);
+  const { data: orders = [] } = useGetOrdersQuery();
   const totalOrders = orders.length;
   const waitingKTBH = orders.filter((o) => o.status === 'WAITING_KTBH').length;
   const contractExported = orders.filter((o) => o.status === 'CONTRACT_EXPORTED' || o.status === 'COMPLETED').length;

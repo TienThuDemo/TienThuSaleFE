@@ -8,6 +8,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': '/src',
+      '@constants': '/src/constants',
+      '@models': '/src/models',
+    },
+  },
+  server: {
+    watch: {
+      // json-server ghi db.json khi PATCH/POST → không để Vite reload
+      ignored: ['**/db.json'],
     },
   },
 })

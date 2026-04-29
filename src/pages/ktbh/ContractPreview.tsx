@@ -2,14 +2,15 @@ import { ArrowLeft, Download, FolderCheck, Printer } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import StatusBadge from '../../components/shared/StatusBadge';
 import { showToast } from '../../utils/toastService';
-import { useOrderStore } from '../../store/useOrderStore';
+import { useGetOrderByIdQuery, useUpdateOrderStatusMutation } from '../../api/orderApi';
 import { formatCurrency, formatDate } from '../../utils/format';
 
 export default function ContractPreview() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const order = useOrderStore((s) => s.getOrderById(id || ''));
-  const updateStatus = useOrderStore((s) => s.updateOrderStatus);
+  
+  const { data: order } = useGetOrderByIdQuery(id || '', { skip: !id });
+  const [updateStatusMutation] = useUpdateOrderStatusMutation();
 
   if (!order || !order.contractInfo) {
     return (
@@ -26,8 +27,8 @@ export default function ContractPreview() {
 
   const handlePrint = () => window.print();
   const handleDownload = () => showToast('Đã tải PDF demo thành công', 'info');
-  const handleComplete = () => {
-    updateStatus(order.id, 'COMPLETED');
+  const handleComplete = async () => {
+    await updateStatusMutation({ id: order.id, status: 'COMPLETED' });
     showToast('Hồ sơ đã hoàn tất!', 'success');
     navigate('/ktbh/orders');
   };

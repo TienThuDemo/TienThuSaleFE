@@ -1,0 +1,436 @@
+{
+  "orders": [
+    {
+      "id": "ORD-20260425-001",
+      "createdAt": "2026-04-25T10:30:00",
+      "saleName": "Nguyễn Văn An",
+      "status": "CONTRACT_EXPORTED",
+      "vehicleItems": [
+        {
+          "model": "Honda Vision",
+          "version": "Đặc biệt",
+          "color": "Trắng ngọc trai",
+          "quantity": 1,
+          "listPrice": 34290000,
+          "salePrice": 33000000
+        }
+      ],
+      "promotionInfo": {
+        "discountAmount": 1490000,
+        "gifts": [
+          "Mũ bảo hiểm chính hãng",
+          "Áo mưa cao cấp"
+        ],
+        "promotionNote": "Khuyến mãi tháng 4 - Giảm giá đặc biệt cho khách hàng mới"
+      },
+      "addons": [
+        {
+          "id": "insurance",
+          "name": "Bảo hiểm xe máy (1 năm)",
+          "price": 66000,
+          "selected": true
+        },
+        {
+          "id": "maintenance",
+          "name": "Gói bảo dưỡng 12 tháng",
+          "price": 1500000,
+          "selected": false
+        },
+        {
+          "id": "accessories",
+          "name": "Phụ kiện lắp thêm",
+          "price": 2000000,
+          "selected": false
+        },
+        {
+          "id": "registration",
+          "name": "Phí đăng ký biển số",
+          "price": 4000000,
+          "selected": true
+        }
+      ],
+      "paymentInfo": {
+        "paymentMethod": "transfer",
+        "depositAmount": 5000000,
+        "expectedFullPaymentDate": "2026-05-01",
+        "remainingAmount": 30576000
+      },
+      "customerInfo": {
+        "fullName": "Trần Thị Bình",
+        "phone": "0901234560",
+        "idNumber": "079201001234",
+        "address": "123 Nguyễn Văn Linh, Quận 7, TP.HCM",
+        "email": "binhtt@gmail.com"
+      },
+      "totalAmount": 35576000,
+      "note": "Khách hàng muốn nhận xe vào cuối tuần",
+      "contractInfo": {
+        "contractNumber": "HD-20260429-105",
+        "contractDate": "2026-04-29",
+        "accountantName": "Nguyễn Thị Lan",
+        "deliveryDate": "",
+        "deliveryLocation": "",
+        "warrantyPolicy": "Bảo hành 3 năm hoặc 30.000km theo chính sách hãng",
+        "internalNote": ""
+      }
+    },
+    {
+      "id": "ORD-20260426-002",
+      "createdAt": "2026-04-26T14:15:00",
+      "saleName": "Lê Minh Tuấn",
+      "status": "WAITING_KTBH",
+      "vehicleItems": [
+        {
+          "model": "Honda SH Mode",
+          "version": "Thể thao",
+          "color": "Xanh đậm",
+          "quantity": 1,
+          "listPrice": 57990000,
+          "salePrice": 56500000
+        },
+        {
+          "model": "Honda Vision",
+          "version": "Tiêu chuẩn",
+          "color": "Đỏ tươi",
+          "quantity": 1,
+          "listPrice": 31490000,
+          "salePrice": 30500000
+        }
+      ],
+      "promotionInfo": {
+        "discountAmount": 2490000,
+        "gifts": [
+          "Mũ bảo hiểm chính hãng",
+          "Voucher bảo dưỡng 500K",
+          "Thảm lót chân"
+        ],
+        "promotionNote": "Ưu đãi đặc biệt — mua 2 xe combo"
+      },
+      "addons": [
+        {
+          "id": "insurance",
+          "name": "Bảo hiểm xe máy (1 năm)",
+          "price": 66000,
+          "selected": true
+        },
+        {
+          "id": "maintenance",
+          "name": "Gói bảo dưỡng 12 tháng",
+          "price": 1500000,
+          "selected": false
+        },
+        {
+          "id": "accessories",
+          "name": "Phụ kiện lắp thêm",
+          "price": 2000000,
+          "selected": true
+        },
+        {
+          "id": "registration",
+          "name": "Phí đăng ký biển số",
+          "price": 4000000,
+          "selected": false
+        }
+      ],
+      "paymentInfo": {
+        "paymentMethod": "installment",
+        "depositAmount": 15000000,
+        "expectedFullPaymentDate": "2026-06-01",
+        "remainingAmount": 77076000
+      },
+      "customerInfo": {
+        "fullName": "Phạm Đức Hoàng",
+        "phone": "0987654321",
+        "idNumber": "079199005678",
+        "address": "456 Lê Văn Sỹ, Quận 3, TP.HCM",
+        "email": "hoangpd@gmail.com"
+      },
+      "totalAmount": 92076000,
+      "note": "Khách hàng mua 2 xe — cần hỗ trợ trả góp qua VPBank"
+    },
+    {
+      "id": "ORD-20260429-037",
+      "createdAt": "2026-04-29T02:17:03.037Z",
+      "saleName": "Trần Văn Hùng",
+      "status": "WAITING_KTBH",
+      "vehicleItems": [
+        {
+          "model": "Honda Vision",
+          "version": "Đặc biệt",
+          "color": "Đen nhám",
+          "quantity": 1,
+          "listPrice": 33990000,
+          "salePrice": 33990000
+        }
+      ],
+      "promotionInfo": {
+        "discountAmount": 1000000,
+        "gifts": [
+          "Mũ bảo hiểm chính hãng",
+          "Voucher bảo dưỡng 500K",
+          "Bọc yên xe"
+        ],
+        "promotionNote": ""
+      },
+      "addons": [
+        {
+          "id": "insurance",
+          "name": "Bảo hiểm xe máy (1 năm)",
+          "price": 66000,
+          "selected": false
+        },
+        {
+          "id": "maintenance",
+          "name": "Gói bảo dưỡng 12 tháng",
+          "price": 1500000,
+          "selected": true
+        },
+        {
+          "id": "accessories",
+          "name": "Phụ kiện lắp thêm",
+          "price": 2000000,
+          "selected": false
+        },
+        {
+          "id": "registration",
+          "name": "Phí đăng ký biển số",
+          "price": 4000000,
+          "selected": true
+        }
+      ],
+      "paymentInfo": {
+        "paymentMethod": "cash",
+        "depositAmount": 0,
+        "expectedFullPaymentDate": "",
+        "remainingAmount": 39490000
+      },
+      "customerInfo": {
+        "fullName": "SSS",
+        "phone": "1111000555",
+        "idNumber": "000",
+        "address": "",
+        "email": ""
+      },
+      "totalAmount": 39490000,
+      "note": ""
+    },
+    {
+      "id": "ORD-20260429-494",
+      "createdAt": "2026-04-29T03:21:07.494Z",
+      "saleName": "Trần Văn Hùng",
+      "status": "WAITING_KTBH",
+      "vehicleItems": [
+        {
+          "model": "Honda SH Mode",
+          "version": "Thể thao",
+          "color": "Trắng ngọc trai",
+          "quantity": 1,
+          "listPrice": 58990000,
+          "salePrice": 58990000
+        }
+      ],
+      "promotionInfo": {
+        "discountAmount": 1000000,
+        "gifts": [
+          "Mũ bảo hiểm chính hãng",
+          "Thảm lót chân",
+          "Khóa chống trộm"
+        ],
+        "promotionNote": ""
+      },
+      "addons": [
+        {
+          "id": "insurance",
+          "name": "Bảo hiểm xe máy (1 năm)",
+          "price": 66000,
+          "selected": true
+        },
+        {
+          "id": "maintenance",
+          "name": "Gói bảo dưỡng 12 tháng",
+          "price": 1500000,
+          "selected": false
+        },
+        {
+          "id": "accessories",
+          "name": "Phụ kiện lắp thêm",
+          "price": 2000000,
+          "selected": true
+        },
+        {
+          "id": "registration",
+          "name": "Phí đăng ký biển số",
+          "price": 4000000,
+          "selected": false
+        }
+      ],
+      "paymentInfo": {
+        "paymentMethod": "cash",
+        "depositAmount": 0,
+        "expectedFullPaymentDate": "",
+        "remainingAmount": 60056000
+      },
+      "customerInfo": {
+        "fullName": "Lê A",
+        "phone": "",
+        "idNumber": "",
+        "address": "",
+        "email": ""
+      },
+      "totalAmount": 60056000,
+      "note": ""
+    },
+    {
+      "id": "ORD-20260429-878",
+      "createdAt": "2026-04-29T03:33:51.878Z",
+      "saleName": "Trần Văn Hùng",
+      "status": "COMPLETED",
+      "vehicleItems": [
+        {
+          "model": "Honda Air Blade",
+          "version": "Tiêu chuẩn 160cc",
+          "color": "Bạc đen",
+          "quantity": 1,
+          "listPrice": 56490000,
+          "salePrice": 56490000
+        }
+      ],
+      "promotionInfo": {
+        "discountAmount": 3000000,
+        "gifts": [
+          "Mũ bảo hiểm chính hãng",
+          "Thảm lót chân",
+          "Khóa chống trộm"
+        ],
+        "promotionNote": ""
+      },
+      "addons": [
+        {
+          "id": "insurance",
+          "name": "Bảo hiểm xe máy (1 năm)",
+          "price": 66000,
+          "selected": true
+        },
+        {
+          "id": "maintenance",
+          "name": "Gói bảo dưỡng 12 tháng",
+          "price": 1500000,
+          "selected": false
+        },
+        {
+          "id": "accessories",
+          "name": "Phụ kiện lắp thêm",
+          "price": 2000000,
+          "selected": true
+        },
+        {
+          "id": "registration",
+          "name": "Phí đăng ký biển số",
+          "price": 4000000,
+          "selected": true
+        }
+      ],
+      "paymentInfo": {
+        "paymentMethod": "cash",
+        "depositAmount": 0,
+        "expectedFullPaymentDate": "",
+        "remainingAmount": 59556000
+      },
+      "customerInfo": {
+        "fullName": "Nguyễn Văn V",
+        "phone": "0123698525",
+        "idNumber": "023595698521",
+        "address": "Đà NẴNG",
+        "email": ""
+      },
+      "totalAmount": 59556000,
+      "note": "",
+      "contractInfo": {
+        "contractNumber": "HD-20260429-030",
+        "contractDate": "2026-04-29",
+        "accountantName": "Nguyễn Thị Lan",
+        "deliveryDate": "",
+        "deliveryLocation": "",
+        "warrantyPolicy": "Bảo hành 3 năm hoặc 30.000km theo chính sách hãng",
+        "internalNote": ""
+      }
+    },
+    {
+      "id": "ORD-20260429-733",
+      "createdAt": "2026-04-29T04:33:33.733Z",
+      "saleName": "Trần Văn Hùng",
+      "status": "COMPLETED",
+      "vehicleItems": [
+        {
+          "model": "Honda Vision",
+          "version": "Tiêu chuẩn",
+          "color": "Đen nhám",
+          "quantity": 1,
+          "listPrice": 31990000,
+          "salePrice": 31990000
+        }
+      ],
+      "promotionInfo": {
+        "discountAmount": 2000000,
+        "gifts": [
+          "Mũ bảo hiểm chính hãng",
+          "Voucher bảo dưỡng 500K",
+          "Khóa chống trộm",
+          "Thảm lót chân",
+          "Bọc yên xe"
+        ],
+        "promotionNote": ""
+      },
+      "addons": [
+        {
+          "id": "insurance",
+          "name": "Bảo hiểm xe máy (1 năm)",
+          "price": 66000,
+          "selected": true
+        },
+        {
+          "id": "maintenance",
+          "name": "Gói bảo dưỡng 12 tháng",
+          "price": 1500000,
+          "selected": false
+        },
+        {
+          "id": "accessories",
+          "name": "Phụ kiện lắp thêm",
+          "price": 2000000,
+          "selected": true
+        },
+        {
+          "id": "registration",
+          "name": "Phí đăng ký biển số",
+          "price": 4000000,
+          "selected": true
+        }
+      ],
+      "paymentInfo": {
+        "paymentMethod": "cash",
+        "depositAmount": 0,
+        "expectedFullPaymentDate": "",
+        "remainingAmount": 36056000
+      },
+      "customerInfo": {
+        "fullName": "Lê Vqăn B",
+        "phone": "0123654789",
+        "idNumber": "0125896346",
+        "address": "Đà Nẵng",
+        "email": ""
+      },
+      "totalAmount": 36056000,
+      "note": "Bảo hành 3 năm",
+      "contractInfo": {
+        "contractNumber": "HD-20260429-450",
+        "contractDate": "2026-04-29",
+        "accountantName": "Nguyễn Thị Lan",
+        "deliveryDate": "",
+        "deliveryLocation": "",
+        "warrantyPolicy": "Bảo hành 3 năm hoặc 30.000km theo chính sách hãng",
+        "internalNote": ""
+      }
+    }
+  ]
+}

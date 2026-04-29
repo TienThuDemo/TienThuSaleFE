@@ -1,9 +1,9 @@
 import { AlertTriangle, ArrowLeft, CheckCircle, ClipboardCheck, CreditCard, FileText, Gift, Package, Pencil, Plus, Save, StickyNote, Trash2, Truck, User, X, XCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import StatusBadge from '../../components/shared/StatusBadge';
-import { useOrderStore } from '../../store/useOrderStore';
-import type { AddonItem, ContractInfo, CustomerInfo, PaymentInfo, PromotionInfo, VehicleInfo } from '../../types';
+import { useGetOrderByIdQuery, useUpdateOrderMutation, useUpdateOrderStatusMutation, useUpdateOrderContractMutation } from '../../api/orderApi';
+import type { AddonItem, ContractInfo, CustomerInfo, Order, PaymentInfo, PromotionInfo, VehicleInfo } from '../../types';
 import { GIFT_OPTIONS, VEHICLE_MODELS, getVehiclePrice } from '../../types';
 import { formatCurrency, paymentMethodLabel } from '../../utils/format';
 import { showToast } from '../../utils/toastService';
@@ -31,16 +31,24 @@ function InfoRow({ label, value, accent, mono, missing }: { label: string; value
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const order = useOrderStore((s) => s.getOrderById(id || ''));
-  const updateStatus = useOrderStore((s) => s.updateOrderStatus);
-  const updateContract = useOrderStore((s) => s.updateOrderContractInfo);
-  const updateOrderInfo = useOrderStore((s) => s.updateOrderInfo);
+  
+  const { data: order } = useGetOrderByIdQuery(id || '', { skip: !id });
+  const [updateStatusMutation] = useUpdateOrderStatusMutation();
+  const [updateContractMutation] = useUpdateOrderContractMutation();
+  const [updateOrderMutation] = useUpdateOrderMutation();
 
   const [contract, setContract] = useState<ContractInfo>({
     contractNumber: '', contractDate: new Date().toISOString().slice(0, 10),
     accountantName: 'Nguyễn Thị Lan', deliveryDate: '', deliveryLocation: '',
     warrantyPolicy: 'Bảo hành 3 năm hoặc 30.000km theo chính sách hãng', internalNote: '',
   });
+
+  useEffect(() => {
+    if (order?.contractInfo) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setContract(order.contractInfo);
+    }
+  }, [order?.contractInfo]);
 
   // Edit states for each section
   const [editSection, setEditSection] = useState<string | null>(null);
@@ -65,9 +73,9 @@ export default function OrderDetail() {
   const missingFields = getMissingFields(order.customerInfo);
   const selectedAddons = order.addons.filter((a) => a.selected);
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (!window.confirm('Bạn có chắc muốn hủy đơn hàng này? Hành động này không thể hoàn tác.')) return;
-    updateStatus(order.id, 'CANCELLED');
+    await updateStatusMutation({ id: order.id, status: 'CANCELLED' });
     showToast('Đã hủy đơn hàng', 'info');
   };
 
@@ -81,18 +89,21 @@ export default function OrderDetail() {
     if (section === 'note') setEditNote(order.note);
   };
 
-  const saveEdit = (section: string) => {
-    if (section === 'customer') updateOrderInfo(order.id, { customerInfo: editCustomer });
-    if (section === 'vehicle') updateOrderInfo(order.id, { vehicleItems: editVehicles });
-    if (section === 'payment') updateOrderInfo(order.id, { paymentInfo: editPayment });
-    if (section === 'promo') updateOrderInfo(order.id, { promotionInfo: editPromo });
-    if (section === 'addons') updateOrderInfo(order.id, { addons: editAddons });
-    if (section === 'note') updateOrderInfo(order.id, { note: editNote });
+  const saveEdit = async (section: string) => {
+    const patch: Partial<Order> = {};
+    if (section === 'customer') patch.customerInfo = editCustomer;
+    if (section === 'vehicle') patch.vehicleItems = editVehicles;
+    if (section === 'payment') patch.paymentInfo = editPayment;
+    if (section === 'promo') patch.promotionInfo = editPromo;
+    if (section === 'addons') patch.addons = editAddons;
+    if (section === 'note') patch.note = editNote;
+    
+    await updateOrderMutation({ id: order.id, data: patch });
     setEditSection(null);
     showToast('Đã cập nhật thông tin', 'success');
   };
 
-  const handleConfirmInfo = () => {
+  const handleConfirmInfo = async () => {
     if (missingFields.length > 0) {
       showToast(`Cần bổ sung: ${missingFields.join(', ')}`, 'info');
       startEdit('customer');
@@ -105,11 +116,11 @@ export default function OrderDetail() {
     const contractNumber = `HD-${dateStr}-${seq}`;
     setContract(prev => ({ ...prev, contractNumber, contractDate: now.toISOString().slice(0, 10) }));
 
-    updateStatus(order.id, 'INFO_CONFIRMED');
+    await updateStatusMutation({ id: order.id, status: 'INFO_CONFIRMED' });
     showToast('Đã xác nhận — Số hợp đồng: ' + contractNumber, 'success');
   };
-  const handleConfirmContract = () => { updateContract(order.id, contract); updateStatus(order.id, 'READY_TO_EXPORT_CONTRACT'); showToast('Đã xác nhận', 'success'); };
-  const handleExportContract = () => { updateStatus(order.id, 'CONTRACT_EXPORTED'); showToast('Đã xuất hợp đồng', 'success'); navigate(`/ktbh/contracts/${order.id}`); };
+  const handleConfirmContract = async () => { await updateContractMutation({ id: order.id, contractInfo: contract }); await updateStatusMutation({ id: order.id, status: 'READY_TO_EXPORT_CONTRACT' }); showToast('Đã xác nhận', 'success'); };
+  const handleExportContract = async () => { await updateStatusMutation({ id: order.id, status: 'CONTRACT_EXPORTED' }); showToast('Đã xuất hợp đồng', 'success'); navigate(`/ktbh/contracts/${order.id}`); };
 
   const stepLabels = ['Tiếp nhận', 'Xác nhận', 'Hợp đồng', 'Xuất HĐ', 'Hoàn tất'];
   const currentIdx = ['WAITING_KTBH', 'INFO_CONFIRMED', 'READY_TO_EXPORT_CONTRACT', 'CONTRACT_EXPORTED', 'COMPLETED'].indexOf(order.status);

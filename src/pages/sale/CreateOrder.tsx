@@ -2,7 +2,7 @@ import { ArrowLeft, ArrowRight, Check, Plus, Send, ShoppingCart, Trash2 } from '
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../../utils/toastService';
-import { useOrderStore } from '../../store/useOrderStore';
+import { useCreateOrderMutation } from '../../api/orderApi';
 import type { AddonItem, CustomerInfo, PaymentInfo, PromotionInfo, VehicleInfo } from '../../types';
 import { DEFAULT_ADDONS, GIFT_OPTIONS, VEHICLE_MODELS, getVehiclePrice, vehicleTotalAmount } from '../../types';
 import { formatCurrency, generateOrderId } from '../../utils/format';
@@ -20,7 +20,7 @@ const emptyVehicle = (): VehicleInfo => ({ model: '', version: '', color: '', qu
 
 export default function CreateOrder() {
   const navigate = useNavigate();
-  const addOrder = useOrderStore((s) => s.addOrder);
+  const [createOrder] = useCreateOrderMutation();
   const [step, setStep] = useState(0);
   const [showSummary, setShowSummary] = useState(false);
 
@@ -49,12 +49,12 @@ export default function CreateOrder() {
     setVehicles(prev => prev.filter((_, i) => i !== idx));
   };
 
-  const handleSubmit = () => {
-    addOrder({
+  const handleSubmit = async () => {
+    await createOrder({
       id: generateOrderId(), createdAt: new Date().toISOString(), saleName: 'Trần Văn Hùng',
       status: 'WAITING_KTBH', vehicleItems: vehicles, promotionInfo: promo, addons,
       paymentInfo: { ...payment, remainingAmount: remaining }, customerInfo: customer, totalAmount, note,
-    });
+    }).unwrap();
     showToast('Đã gửi đơn sang KTBH thành công!', 'success');
     navigate('/sale');
   };

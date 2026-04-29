@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Settings2, ClipboardList, Filter, ArrowRight } from 'lucide-react';
-import { useOrderStore } from '../../store/useOrderStore';
+import { useGetOrdersQuery } from '../../api/orderApi';
 import { formatCurrency, formatDateTime } from '../../utils/format';
 import StatusBadge from '../../components/shared/StatusBadge';
 import type { OrderStatus } from '../../types';
@@ -9,7 +9,7 @@ import { vehicleSummary } from '../../types';
 
 export default function KTBHOrders() {
   const navigate = useNavigate();
-  const orders = useOrderStore((s) => s.orders);
+  const { data: orders = [] } = useGetOrdersQuery();
   const [nameFilter, setNameFilter] = useState('');
   const [phoneFilter, setPhoneFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('');

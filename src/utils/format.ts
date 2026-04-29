@@ -29,8 +29,8 @@ export const formatDateTime = (dateStr: string): string => {
 export const generateOrderId = (): string => {
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-  const rand = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-  return `ORD-${dateStr}-${rand}`;
+  const seq = String(now.getTime() % 1000).padStart(3, '0');
+  return `ORD-${dateStr}-${seq}`;
 };
 
 export const paymentMethodLabel = (method: string): string => {

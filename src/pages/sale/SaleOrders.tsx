@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { FileCheck2, ArrowRight, ClipboardList } from 'lucide-react';
-import { useOrderStore } from '../../store/useOrderStore';
+import { useGetOrdersQuery } from '../../api/orderApi';
 import { formatCurrency, formatDateTime } from '../../utils/format';
 import { vehicleSummary } from '../../types';
 import StatusBadge from '../../components/shared/StatusBadge';
 
 export default function SaleOrders() {
   const navigate = useNavigate();
-  const orders = useOrderStore((s) => s.orders);
+  const { data: orders = [] } = useGetOrdersQuery();
 
   return (
     <div className="p-4 sm:p-6 lg:p-10 animate-fade-in">

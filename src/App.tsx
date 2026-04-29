@@ -9,7 +9,6 @@ import KTBHDashboard from './pages/ktbh/KTBHDashboard';
 import KTBHOrders from './pages/ktbh/KTBHOrders';
 import OrderDetail from './pages/ktbh/OrderDetail';
 import ContractPreview from './pages/ktbh/ContractPreview';
-
 export default function App() {
   return (
     <BrowserRouter>

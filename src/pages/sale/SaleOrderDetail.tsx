@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, User, CreditCard, Gift, StickyNote, ClipboardCheck, Clock, Pencil, Save, X, Plus, Trash2, XCircle } from 'lucide-react';
-import { useOrderStore } from '../../store/useOrderStore';
+import { useGetOrderByIdQuery, useUpdateOrderMutation, useUpdateOrderStatusMutation } from '../../api/orderApi';
 import { formatCurrency, paymentMethodLabel, formatDateTime } from '../../utils/format';
 import { showToast } from '../../utils/toastService';
 import StatusBadge from '../../components/shared/StatusBadge';
 import { VEHICLE_MODELS, GIFT_OPTIONS, getVehiclePrice } from '../../types';
-import type { CustomerInfo, VehicleInfo, PaymentInfo, PromotionInfo, AddonItem } from '../../types';
+import type { CustomerInfo, VehicleInfo, PaymentInfo, PromotionInfo, AddonItem, Order } from '../../types';
 
 function InfoRow({ label, value, accent, mono }: { label: string; value: string; accent?: string; mono?: boolean }) {
   return (
@@ -22,9 +22,10 @@ type EditSection = 'customer' | 'vehicle' | 'promo' | 'payment' | 'addons' | 'no
 export default function SaleOrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const order = useOrderStore((s) => s.getOrderById(id || ''));
-  const updateOrderInfo = useOrderStore((s) => s.updateOrderInfo);
-  const updateOrderStatus = useOrderStore((s) => s.updateOrderStatus);
+  
+  const { data: order } = useGetOrderByIdQuery(id || '', { skip: !id });
+  const [updateOrder] = useUpdateOrderMutation();
+  const [updateStatus] = useUpdateOrderStatusMutation();
 
   // Edit states
   const [editing, setEditing] = useState<EditSection>(null);
@@ -47,9 +48,9 @@ export default function SaleOrderDetail() {
   const canEdit = order.status === 'WAITING_KTBH';
   const canCancel = order.status === 'WAITING_KTBH' || order.status === 'INFO_CONFIRMED';
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (!window.confirm('Bạn có chắc muốn hủy đơn hàng này? Hành động này không thể hoàn tác.')) return;
-    updateOrderStatus(order.id, 'CANCELLED');
+    await updateStatus({ id: order.id, status: 'CANCELLED' });
     showToast('Đã hủy đơn hàng', 'info');
   };
 
@@ -66,13 +67,16 @@ export default function SaleOrderDetail() {
 
   const cancelEdit = () => setEditing(null);
 
-  const saveEdit = (section: string) => {
-    if (section === 'customer') updateOrderInfo(order.id, { customerInfo: editCustomer });
-    if (section === 'vehicle') updateOrderInfo(order.id, { vehicleItems: editVehicles });
-    if (section === 'payment') updateOrderInfo(order.id, { paymentInfo: editPayment });
-    if (section === 'promo') updateOrderInfo(order.id, { promotionInfo: editPromo });
-    if (section === 'addons') updateOrderInfo(order.id, { addons: editAddons });
-    if (section === 'note') updateOrderInfo(order.id, { note: editNote });
+  const saveEdit = async (section: string) => {
+    const patch: Partial<Order> = {};
+    if (section === 'customer') patch.customerInfo = editCustomer;
+    if (section === 'vehicle') patch.vehicleItems = editVehicles;
+    if (section === 'payment') patch.paymentInfo = editPayment;
+    if (section === 'promo') patch.promotionInfo = editPromo;
+    if (section === 'addons') patch.addons = editAddons;
+    if (section === 'note') patch.note = editNote;
+    
+    await updateOrder({ id: order.id, data: patch });
     setEditing(null);
     showToast('Đã cập nhật thông tin', 'success');
   };
