@@ -6,12 +6,16 @@ import {
   FileCheck2,
   FilePlus2,
   LayoutDashboard,
+  Loader2,
+  LogOut,
   Menu,
   Settings,
   X
 } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../../features/auth/auth.store';
+import { useLogout } from '../../features/auth/hooks/useLogout';
 
 const saleNav = [
   { to: '/sale', icon: LayoutDashboard, label: 'Dashboard', end: true },
@@ -50,8 +54,11 @@ export default function AppLayout() {
   const currentNav = isAdmin ? adminNav : isKTBH ? ktbhNav : saleNav;
   const roleLabel = isAdmin ? 'QUẢN TRỊ HỆ THỐNG' : isKTBH ? 'KẾ TOÁN BÁN HÀNG' : 'NHÂN VIÊN SALE';
   const roleBadgeColor = isAdmin ? 'from-purple-500 to-indigo-600' : isKTBH ? 'from-amber-500 to-orange-600' : 'from-red-500 to-red-700';
-  const userName = isAdmin ? 'Admin' : isKTBH ? 'Nguyễn Thị Lan' : 'Trần Văn Hùng';
+  const authUser = useAuthStore((state) => state.user);
+  const fallbackName = isAdmin ? 'Admin' : isKTBH ? 'Nguyễn Thị Lan' : 'Trần Văn Hùng';
+  const userName = authUser?.email?.split('@')[0] ?? fallbackName;
   const userRole = isAdmin ? 'ADMIN' : isKTBH ? 'KTBH' : 'SALE';
+  const { logout, isLoggingOut } = useLogout();
   const [prevPathname, setPrevPathname] = useState(location.pathname);
 
   if (location.pathname !== prevPathname) {
@@ -187,17 +194,47 @@ export default function AppLayout() {
         <div className="flex items-center gap-3 px-2">
           <div className="relative flex-shrink-0">
             <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${roleBadgeColor} flex items-center justify-center text-white text-sm font-bold shadow-lg`}>
-              {userName.charAt(0)}
+              {userName.charAt(0).toUpperCase()}
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-400" style={{ border: `3px solid ${S.bg}` }} />
           </div>
           {!collapsed && (
-            <div className="overflow-hidden">
+            <div className="overflow-hidden flex-1">
               <div className="text-[13px] font-bold text-white truncate">{userName}</div>
               <div className="text-[11px] font-medium" style={{ color: S.textMuted }}>{userRole}</div>
             </div>
           )}
+          {!collapsed && (
+            <button
+              type="button"
+              onClick={() => { void logout(); }}
+              disabled={isLoggingOut}
+              aria-label="Đăng xuất"
+              title="Đăng xuất"
+              className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all disabled:opacity-50"
+              style={{ color: S.textMuted, background: 'rgba(255,255,255,0.05)' }}
+              onMouseEnter={e => { if (isLoggingOut) return; e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = S.accentGlow; }}
+              onMouseLeave={e => { e.currentTarget.style.color = S.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+            >
+              {isLoggingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}
+            </button>
+          )}
         </div>
+        {collapsed && (
+          <button
+            type="button"
+            onClick={() => { void logout(); }}
+            disabled={isLoggingOut}
+            aria-label="Đăng xuất"
+            title="Đăng xuất"
+            className="mt-3 w-full flex items-center justify-center py-2 rounded-xl transition-all disabled:opacity-50"
+            style={{ color: S.textMuted, background: 'rgba(255,255,255,0.05)' }}
+            onMouseEnter={e => { if (isLoggingOut) return; e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = S.accentGlow; }}
+            onMouseLeave={e => { e.currentTarget.style.color = S.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+          >
+            {isLoggingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}
+          </button>
+        )}
       </div>
     </>
   );
