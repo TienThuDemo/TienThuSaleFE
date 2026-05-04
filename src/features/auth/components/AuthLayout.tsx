@@ -12,17 +12,17 @@ const HIGHLIGHTS = [
   {
     icon: ShieldCheck,
     title: 'Bảo mật doanh nghiệp',
-    description: 'JWT + xoay refresh token, phát hiện tái sử dụng theo chuẩn OWASP.',
+    description: 'Cơ chế bảo mật hiện đại với khả năng quản lý phiên và phát hiện truy cập bất thường.',
   },
   {
     icon: Zap,
     title: 'Hiệu năng tối ưu',
-    description: 'Caching thông minh, deduplicate request, tải dữ liệu song song.',
+    description: 'Tối ưu tốc độ xử lý và truyền tải dữ liệu, mang lại trải nghiệm mượt mà và ổn định.',
   },
   {
     icon: Sparkles,
     title: 'Trải nghiệm mượt mà',
-    description: 'Giao diện hiện đại, phản hồi tức thì cho mọi luồng nghiệp vụ.',
+    description: 'Giao diện hiện đại.',
   },
 ];
 
