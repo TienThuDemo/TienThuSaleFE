@@ -11,7 +11,7 @@ import type { AuthTokens } from '../../features/auth/auth.types';
 
 const BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/+$/, '') ||
-  'https://tienthu-api.onrender.com';
+  'http://localhost:3001';
 
 const AUTH_HEADER = 'Authorization';
 const BEARER_PREFIX = 'Bearer';
