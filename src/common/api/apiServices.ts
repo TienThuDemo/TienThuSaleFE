@@ -1,17 +1,17 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
-import { PortalTagTypeE } from '../enums/tag-type';
-import { useAuthStore } from '../../features/auth/auth.store';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
   AUTH_API_PATHS,
   HTTP_STATUS_UNAUTHORIZED,
 } from '../../features/auth/auth.constants';
-import { showToast } from '../../utils/toastService';
+import { useAuthStore } from '../../features/auth/auth.store';
 import type { AuthTokens } from '../../features/auth/auth.types';
+import { showToast } from '../../utils/toastService';
+import { PortalTagTypeE } from '../enums/tag-type';
 
 const BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/+$/, '') ||
-  'http://localhost:3001';
+  'https://tienthusalefe.onrender.com';
 
 const AUTH_HEADER = 'Authorization';
 const BEARER_PREFIX = 'Bearer';
