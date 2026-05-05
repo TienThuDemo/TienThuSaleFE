@@ -1,12 +1,13 @@
 import { ArrowLeft, ArrowRight, Check, Plus, Send, ShoppingCart, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { showToast } from '../../utils/toastService';
-import { useCreateOrderMutation } from '../../api/orderApi';
 import { useGetSystemConfigQuery } from '../../api/configApi';
+import { useCreateOrderMutation } from '../../api/orderApi';
+import OCRApp from '../../components/shared/ocrApp';
 import type { AddonItem, CustomerInfo, PaymentInfo, PromotionInfo, VehicleInfo } from '../../types';
 import { getVehiclePrice, vehicleTotalAmount } from '../../types';
 import { formatCurrency, generateOrderId } from '../../utils/format';
+import { showToast } from '../../utils/toastService';
 import OrderSummary from './OrderSummary';
 
 const STEPS = [
@@ -317,7 +318,18 @@ export default function CreateOrder() {
         {/* Step 4: Customer */}
         {step === 4 && (
           <div className="animate-fade-in">
-            <div className="section-title">Thông tin khách hàng</div>
+            <div className="flex items-center justify-between mb-4 mt-1">
+              <div className="section-title !mb-0 !pb-0">Thông tin khách hàng</div>
+              <OCRApp
+                onScanSuccess={(data) => {
+                  setCustomer(prev => ({
+                    ...prev,
+                    ...data
+                  }));
+                  showToast('Trích xuất thông tin thành công!', 'success');
+                }}
+              />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
               <div className="form-group">
                 <label className="form-label">Họ và tên <span className="required">*</span></label>
