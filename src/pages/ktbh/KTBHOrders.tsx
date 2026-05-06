@@ -1,11 +1,11 @@
+import { ArrowRight, ClipboardList, Filter, Search, Settings2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Settings2, ClipboardList, Filter, ArrowRight } from 'lucide-react';
 import { useGetOrdersQuery } from '../../api/orderApi';
-import { formatCurrency, formatDateTime } from '../../utils/format';
 import StatusBadge from '../../components/shared/StatusBadge';
 import type { OrderStatus } from '../../types';
 import { vehicleSummary } from '../../types';
+import { formatCurrency, formatDateTime } from '../../utils/format';
 
 export default function KTBHOrders() {
   const navigate = useNavigate();
@@ -97,21 +97,21 @@ export default function KTBHOrders() {
                 </tr>
               ) : filtered.map((o) => (
                 <tr key={o.id} onClick={() => navigate(`/ktbh/orders/${o.id}`)}>
-                  <td>
+                  <td className="whitespace-nowrap">
                     <span className="font-mono text-[11px] bg-[#f0f1f5] px-2.5 py-1.5 rounded-lg border border-[#e2e5ee] text-primary-300">{o.id}</span>
                   </td>
                   <td className="text-[12px] whitespace-nowrap">{formatDateTime(o.createdAt)}</td>
-                  <td className="!font-bold !text-[#1a2547]">{o.customerInfo.fullName || <span className="text-[#f87171] italic font-normal">Chưa nhập</span>}</td>
-                  <td className="font-mono text-[12px]">{o.customerInfo.phone || '—'}</td>
-                  <td>
+                  <td className="!font-bold !text-[#1a2547] whitespace-nowrap">{o.customerInfo.fullName || <span className="text-[#f87171] italic font-normal">Chưa nhập</span>}</td>
+                  <td className="font-mono text-[12px] whitespace-nowrap">{o.customerInfo.phone || '—'}</td>
+                  <td className="whitespace-nowrap">
                     <div className="text-[13px] font-bold text-[#1a2547]">{o.vehicleItems?.[0]?.model ?? '—'}</div>
                     <div className="text-[11px] text-[#94a3b8] mt-0.5">{(o.vehicleItems?.length ?? 0) > 1 ? `+${o.vehicleItems!.length - 1} xe khác` : `${o.vehicleItems?.[0]?.version ?? ''} · ${o.vehicleItems?.[0]?.color ?? ''}`}</div>
                   </td>
                   <td className="!font-black !text-[#1a2547] whitespace-nowrap text-[14px]">{formatCurrency(o.totalAmount)}</td>
                   <td className="whitespace-nowrap text-[13px]">{formatCurrency(o.paymentInfo.depositAmount)}</td>
-                  <td className="text-[12px]">{o.saleName}</td>
-                  <td><StatusBadge status={o.status} /></td>
-                  <td>
+                  <td className="text-[12px] whitespace-nowrap">{o.saleName}</td>
+                  <td className="whitespace-nowrap"><StatusBadge status={o.status} /></td>
+                  <td className="whitespace-nowrap">
                     <button className="btn-ghost text-[12px]" onClick={(e) => { e.stopPropagation(); navigate(`/ktbh/orders/${o.id}`); }}>
                       <Settings2 className="w-3.5 h-3.5" /> Xử lý
                     </button>
