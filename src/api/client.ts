@@ -9,7 +9,7 @@
  * Client tự detect format và unwrap nếu cần.
  */
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/+$/, '') || 'http://localhost:3001';
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/+$/, '') || 'https://tienthusalefe.onrender.com';
 const TIMEOUT  = Number(import.meta.env.VITE_API_TIMEOUT ?? 15000);
 
 async function request<T>(
