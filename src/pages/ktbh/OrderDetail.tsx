@@ -445,7 +445,7 @@ export default function OrderDetail() {
           <div className="flex justify-center"><button className="btn-primary text-[14px] lg:text-[16px] px-8 lg:px-12 py-3.5 lg:py-4 w-full sm:w-auto justify-center" onClick={handleExportContract}><FileText className="w-5 h-5" /> Xuất hợp đồng</button></div>
         )}
 
-        {order.status === 'CONTRACT_EXPORTED' && (
+        {(order.status === 'CONTRACT_EXPORTED' || order.status === 'COMPLETED') && (
           <div className="flex justify-center"><button className="btn-outline-primary text-[14px] px-6 py-3 w-full sm:w-auto justify-center" onClick={() => navigate(`/ktbh/contracts/${order.id}`)}><FileText className="w-5 h-5" /> Xem hợp đồng</button></div>
         )}
       </div>

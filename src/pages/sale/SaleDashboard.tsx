@@ -1,8 +1,8 @@
 import { ArrowRight, Clock, FileCheck2, FilePlus2, Sparkles, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useGetOrdersQuery } from '../../api/orderApi';
 import StatCard from '../../components/shared/StatCard';
 import StatusBadge from '../../components/shared/StatusBadge';
-import { useGetOrdersQuery } from '../../api/orderApi';
 import { vehicleSummary } from '../../types';
 import { formatCurrency, formatDateTime } from '../../utils/format';
 
@@ -45,7 +45,7 @@ export default function SaleDashboard() {
       <div className="glass-card overflow-hidden">
         <div className="px-5 lg:px-8 py-4 lg:py-6 border-b-2 border-[#e2e5ee]">
           <h2 className="text-[15px] lg:text-[16px] font-bold text-[#1a2547]">Đơn hàng gần đây</h2>
-          <p className="text-[12px] text-[#94a3b8] mt-1 font-medium">Hiển thị {Math.min(5, orders.length)} đơn hàng mới nhất</p>
+          <p className="text-[12px] text-[#94a3b8] mt-1 font-medium">Hiển thị {Math.min(100, orders.length)} đơn hàng mới nhất</p>
         </div>
 
         {orders.length === 0 ? (
@@ -57,8 +57,11 @@ export default function SaleDashboard() {
             <p className="text-[12px] lg:text-[13px]">Bấm "Tạo đơn chốt xe" để bắt đầu</p>
           </div>
         ) : (
-          <div>
-            {orders.slice(0, 5).map((order) => (
+          <div className="max-h-[400px] overflow-y-auto">
+            {[...orders]
+              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+              .slice(0, 100)
+              .map((order) => (
               <div
                 key={order.id}
                 className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-5 lg:px-8 py-4 lg:py-5 border-b border-[#f0f1f5] last:border-b-0 hover:bg-[#f0f1f5] transition-colors group cursor-pointer"

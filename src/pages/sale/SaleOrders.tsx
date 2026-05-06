@@ -29,7 +29,7 @@ export default function SaleOrders() {
         </div>
       ) : (
         <div className="space-y-3">
-          {orders.map((order) => (
+          {[...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((order) => (
             <div
               key={order.id}
               className="glass-card p-4 sm:p-5 cursor-pointer hover:border-primary-500/30 transition-all group"

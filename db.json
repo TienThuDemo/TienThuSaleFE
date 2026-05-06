@@ -431,6 +431,72 @@
         "warrantyPolicy": "Bảo hành 3 năm hoặc 30.000km theo chính sách hãng",
         "internalNote": ""
       }
+    },
+    {
+      "id": "ORD-20260506-188",
+      "createdAt": "2026-05-06T05:20:53.188Z",
+      "saleName": "Trần Văn Hùng",
+      "status": "WAITING_KTBH",
+      "vehicleItems": [
+        {
+          "model": "Honda Vision",
+          "version": "Tiêu chuẩn",
+          "color": "Trắng ngọc trai",
+          "quantity": 1,
+          "listPrice": 32290000,
+          "salePrice": 32290000
+        }
+      ],
+      "promotionInfo": {
+        "discountAmount": 0,
+        "gifts": [
+          "Mũ bảo hiểm chính hãng",
+          "Thảm lót chân",
+          "Phủ nano xe máy"
+        ],
+        "promotionNote": ""
+      },
+      "addons": [
+        {
+          "id": "insurance",
+          "name": "Bảo hiểm xe máy (1 năm)",
+          "price": 66000,
+          "selected": true
+        },
+        {
+          "id": "maintenance",
+          "name": "Gói bảo dưỡng 12 tháng",
+          "price": 1500000,
+          "selected": false
+        },
+        {
+          "id": "accessories",
+          "name": "Phụ kiện lắp thêm",
+          "price": 2000000,
+          "selected": true
+        },
+        {
+          "id": "registration",
+          "name": "Phí đăng ký biển số",
+          "price": 4000000,
+          "selected": false
+        }
+      ],
+      "paymentInfo": {
+        "paymentMethod": "cash",
+        "depositAmount": 0,
+        "expectedFullPaymentDate": "",
+        "remainingAmount": 34356000
+      },
+      "customerInfo": {
+        "fullName": "Lê A",
+        "phone": "0123654789",
+        "idNumber": "023656987453",
+        "address": "ĐN",
+        "email": ""
+      },
+      "totalAmount": 34356000,
+      "note": ""
     }
   ],
   "config": {

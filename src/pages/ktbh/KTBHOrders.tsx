@@ -19,7 +19,7 @@ export default function KTBHOrders() {
     if (phoneFilter && !o.customerInfo.phone.includes(phoneFilter)) return false;
     if (statusFilter && o.status !== statusFilter) return false;
     return true;
-  });
+  }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
     <div className="p-4 sm:p-6 lg:p-10 animate-fade-in">
